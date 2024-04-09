@@ -1,0 +1,96 @@
+\documentclass{article}
+\usepackage{booktabs}
+\usepackage{adjustbox}
+
+
+\newenvironment{tablenotes}[1][1\linewidth]{\begin{minipage}[t]{ #1}\footnotesize{\itshape{Notes}: }}{\end{minipage}}
+\newenvironment{figurenotes}[1][1\linewidth]{\begin{minipage}[t]{ #1}\footnotesize{\itshape{Notes}: }}{\end{minipage}}
+\newcommand\fnote[1]{\captionsetup{font=small}\caption*{#1}} % Figure notes aligned left
+
+%%%% Table stuff %%%%
+\makeatletter %this is needed to allow latex to revert to prior installations to fix noalign error 
+\let\estinput=\@@input %define a new input command so that we can still flatten the document 
+
+\newcommand{\estwide}[4]{
+\vspace{.75ex}{
+\begin{tabular*}
+			{#1}{@{\hskip\tabcolsep\extracolsep\fill}l*{#3}{#4}}
+\toprule
+\toprule
+\estinput{#2}
+\bottomrule
+\bottomrule
+\addlinespace[.75ex]
+\end{tabular*}
+}
+}	
+
+\newcommand{\estadjustwide}[4]{
+\adjustbox{max width={#1},center}{%
+\begingroup \centering
+\begin{tabular}{l*{#3}{#4}}
+\toprule
+\toprule
+\estinput{#2}
+\bottomrule
+\bottomrule
+\addlinespace[.75ex]
+\end{tabular}
+\par\endgroup
+}
+}
+
+% Allow line breaks with \\ in specialcells
+\newcommand{\specialcell}[2][c]{%
+\begin{tabular}[#1]{@{}c@{}}#2\end{tabular}
+}
+
+%%%% End of table stuff %%%%
+
+% Table\Figures notes
+\newcommand{\signifnote}{* p < 0.1, ** p < 0.05, *** p < 0.01.}
+\newcommand{\clusternote}[1]{Standard errors are clustered at the #1 level and reported in parentheses. \signifnote}
+
+\title{tables}
+
+\begin{document}
+In this minimal example, I show few command I use for presenting estimation results:
+\begin{itemize}
+    \item ``signifnote'' is a command that provides a legend for interpreting the asterisks as significance levels \\  \signifnote
+    \item ``clusternote'' explains how the standard errors are clustered at a specified level and includes the significance legend. \\ \clusternote{item}
+    \item ``tabnotes'' adds explanatory text at the bottom of the table to offer additional context or details about the presented data or analysis method.
+    \item ``estwide'' make table in a given width
+    \item ``estadjustwide''  control font size to ensure the table fits well within the document's layout, especially when dealing with wide tables.
+\end{itemize}
+
+\begin{table}[!htbp]
+\centering
+\caption{Here is a table}\label{tab:1} 
+\estwide{0.9\textwidth}{tableA}{3}{c}
+\begin{tablenotes}[0.9\textwidth]
+This table shows something
+\clusternote{Spices} 
+\end{tablenotes}
+\end{table}
+
+
+\begin{table}[!htbp]
+\centering
+\caption{Here is another table}\label{tab:2} 
+\estadjustwide{0.5\textwidth}{tableB}{3}{c}
+\begin{tablenotes}[0.5\textwidth]
+Here I change the font sizes - useful for wide tables. 
+\clusternote{Spices} \end{tablenotes}
+\end{table}
+
+\begin{table}[!htbp]
+\centering
+\caption{Here is a table}\label{tab:3} 
+\estwide{0.9\textwidth}{table_panels}{3}{c}
+\begin{tablenotes}[0.9\textwidth]
+This table shows something
+\signifnote
+\end{tablenotes}
+\end{table}
+
+\end{document}
